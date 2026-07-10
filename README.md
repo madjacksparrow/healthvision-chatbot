@@ -41,30 +41,30 @@ HealthVision (branded in the UI as "Pharmapulse") helps everyday users get quick
 HealthVision/
 ├── README.md
 ├── .gitignore
-└── drug-last/                  # the application
-    ├── ad2.py                  # Flask app entry point (routes, business logic)
-    ├── dbconn.py                # MySQL connection helper
-    ├── Sentiment.py             # BERTweet sentiment analysis wrapper
-    ├── find_nearest.py          # phrase-similarity helper (Levenshtein distance)
-    ├── common_drugs.dat         # pickled: known BP/heart/diabetes medication sets
-    ├── drug_details2.nsk        # pickled: per-drug description/dosage/side-effects
-    ├── requirements.txt
-    ├── .env.example             # template for required environment variables
-    ├── .env                     # your local secrets (not committed)
-    ├── static/
-    │   ├── chatbot.css
-    │   ├── liq.css
-    │   ├── logo2.png
-    │   └── doctor-animate.gif
-    └── templates/
-        ├── login.html
-        ├── index.html            # registration
-        ├── forget_password.html
-        ├── otpSend.html
-        ├── reset_password.html
-        ├── questions.html        # medical survey
-        ├── chatbot.html          # main chat UI
-        └── result.html
+├── ad2.py                  # Flask app entry point (routes, business logic)
+├── dbconn.py                # MySQL connection helper
+├── Sentiment.py             # BERTweet sentiment analysis wrapper
+├── find_nearest.py          # phrase-similarity helper (Levenshtein distance)
+├── common_drugs.dat         # pickled: known BP/heart/diabetes medication sets
+├── drug_details2.nsk        # pickled: per-drug description/dosage/side-effects
+├── requirements.txt
+├── .env.example             # template for required environment variables
+├── .env                     # your local secrets (not committed)
+├── static/
+│   ├── chatbot.css
+│   ├── liq.css
+│   ├── logo2.png
+│   ├── favicon.png
+│   └── doctor-animate.gif
+└── templates/
+    ├── login.html
+    ├── index.html            # registration
+    ├── forget_password.html
+    ├── otpSend.html
+    ├── reset_password.html
+    ├── questions.html        # medical survey
+    ├── chatbot.html          # main chat UI
+    └── result.html
 ```
 
 ## Prerequisites
@@ -77,10 +77,10 @@ HealthVision/
 
 ## Getting Started — How to Run Locally
 
-1. **Clone the repository and enter the app folder**
+1. **Clone the repository**
    ```bash
    git clone <your-repo-url>
-   cd HealthVision/drug-last
+   cd HealthVision
    ```
 
 2. **Create and activate a virtual environment**
