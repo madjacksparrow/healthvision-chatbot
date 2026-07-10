@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pharmapulse Chatbot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='chatbot.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <!-- <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <nav>
+      <div class="logo-container">
+        <a href="#" id="logo-link">
+          <img src="/static/logo2.png" class="logo-img" />
+        </a>
+      </div>
+      <div class="nav-item">
+        <ul class="nav-item">
+          <li><a href="#section1">CHATBOT</a></li>
+          <li><a href="#section2">F&Q</a></li>
+          <!-- <li><button></button></li> -->
+          <li><a href="/logout">LOGOUT</a></li>
+        </ul>
+        <div class="user-icon{% if is_check==1 %} hidden{%endif%}"><button type="submit" class="fa fa-user fa-2x" name="clicked" value="No" id="otpButton"></button></div>
+      </div>
+      
+    </nav>
+    <div class="disclaimer-container">
+      <div class="disclaimer-text">
+        <p><b>Disclaimer:</b> This chatbot provides general information and is not a substitute for professional medical advice. For medical concerns, consult a healthcare provider. In emergencies, contact emergency services immediately. Use at your own risk.
+        </p>
+      </div>
+  </div>
+      <main>
+        <div class="outer-cont" id="section1">
+        <div class="chatbot-container">
+          <div class="container">
+            <div class="chatbot-info">
+              <h1 class="inner-heading">Pharmapulse Chatbot</h1>
+              <p style="font-weight: bold">
+                Ask about your health and receive personalized advice.
+              </p>
+            </div>
+            </div>
+          <div class="dropdown">
+            <label for="language" class="dropdown-label"
+              >Select Language:</label
+            >
+            <select id="language" class="dropdown-select">
+              <option value="en-US">English</option>
+              <option value="hi-IN">Hindi</option>
+            </select>
+          </div>
+
+          <div id="chat" class="chat-box">
+            <!-- Chat messages will be displayed here -->
+      
+          </div>
+          <div class="input-container">
+            <input
+              type="text"
+              id="prompt"
+              class="prompt-input"
+              placeholder="Type your symptoms..."
+            />
+            <!-- <button type="button" id="imageButton" class="generate-button" onclick="openImageInput()">
+              <i class='bx bxs-photo-album' >
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+              </i>
+              </i>
+            </button> -->
+            <button type="button" id="voiceButton" class="generate-button">
+              <i class='bx bxs-microphone'></i>
+            </button>
+            <button type="button" id="generate" class="generate-button">
+              <i class='bx bxs-send'></i>
+            </button>
+          </div>
+        </div>
+        <div class="chatbot-image">
+          <img src="/static/doctor-animate.gif" alt="Chatbot" />
+        </div>
+        <div class="pverlay"></div>
+        <div class="kverlay"></div>
+        <div class="overlay{% if is_guest==1 %} hidden{%endif%}"></div>
+        
+        <div class="popup-check{% if is_guest==1 %} hidden{%endif%}">
+            <div class="close-btn">&times;</div>
+            <div class="form">
+              <form action="/med" method="POST">  
+                    <h2>Medical Update</h2>
+                    <div class="form-element">
+                        <p>Do you have any update or changes with the drugs that you are using for your existing health condition?</p>
+                        <div class="form-element">
+                            <button type="submit" class="btn" name="clicked" value="Yes" id="otpButton">Yes</button>
+                        </div>
+                        <div class="form-element">
+                            <button type="submit" class="btn" name="clicked" value="No" id="otpButton">No</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="popup-acc hidden">
+          <div class="close-btn">&times;</div>
+          <div class="form">
+                  <h2>Account</h2>
+                  <div class="form-element-acc">
+                    <ul>
+                      <li>Name: {{name}}</li>
+                      <li>Email: {{email}}</li>
+                      <li>Phone Number: {{phone_number}}</li>
+                      <li>Bp Drug: {{bp}}</li>
+                      <li>Heart disease Drug: {{heart}}</li>
+                      <li>Diabetic Drug: {{diabetes}}</li>
+                      <li>Others: {{other}}</li>
+                    </ul>
+                    <button type="submit" class="btn" name="clicked" value="edit" id="otpButton">Edit</button>
+                  </div>
+          </div>
+        </div>
+
+        <div class="popup-edit hidden">
+          <div class="close-btn">&times;</div>
+          <div class="form">
+              <h2>Account Update</h2>
+              <div class="form-element-edit">
+                  <form id="updateForm" action="/update" method="POST">
+                      <ul>
+                          <li>
+                              <span>Name: </span>
+                              <input type="text" name="name" id="name" placeholder="enter your name" value="{{name}}" readonly>
+                              <p class="required" id="fullNameRequired" style="display:none; color: red;">* required</p>
+                          </li>
+                          <li>
+                              <span>Email: </span>
+                              <input type="text" name="email" id="email" placeholder="enter your email" value="{{email}}" readonly>
+                              <p class="required" id="emailRequired" style="display:none; color: red;">* required</p>
+                          </li>
+                          <li>
+                              <span>Phone Number: </span>
+                              <input type="text" name="phone_number" id="phone_number" placeholder="enter your phone number" value="">
+                              <p class="required" id="phoneNumberRequired" style="display:none; color: red;">* required</p>
+                          </li>
+                          <li>
+                              <span>Old Password: </span>
+                              <input type="password" name="old_password" id="old_password" placeholder="enter your old password" value="">
+                              <p class="required" id="oldpasswordRequired" style="display:none; color: red;">* required</p>
+                          </li>
+                          <li>
+                              <span>New Password: </span>
+                              <input type="password" name="new_password" id="new_password" placeholder="enter your new password">
+                              <p class="required" id="passwordRequired1" style="display:none; color: red;">* required</p>
+                          </li>
+                          <li>
+                              <span>Confirm Password: </span>
+                              <input type="password" name="confirm_password" id="confirm_password" placeholder="enter your confirm password" value="">
+                              <p class="required" id="passwordRequired2" style="display:none; color: red;">* required</p>
+                          </li>
+                      </ul>
+                      <button type="submit" class="btn" id="saveButton">Save</button>
+                  </form>
+              </div>
+          </div>
+        </div>
+
+
+
+      </main>
+    </div>
+    <div class="accordion" id="section2">
+      <h1>Frequently Asked Questions</h1>
+      <div class="accordion-item">
+          <input type="checkbox" id="accordion1">
+          <label for="accordion1" class="accordion-item-title"><span class="icon"></span>What is SEO, and why is it important for online businesses?</label>
+          <div class="accordion-item-desc">SEO, or Search Engine Optimization, is the practice of optimizing a website to improve its visibility on search engines like Google. It involves various techniques to enhance a site's ranking in search results. SEO is crucial for online businesses as it helps drive organic traffic, increases visibility, and ultimately leads to higher conversions.</div>
+      </div>
+  
+      <div class="accordion-item">
+          <input type="checkbox" id="accordion2">
+          <label for="accordion2" class="accordion-item-title"><span class="icon"></span>How long does it take to see results from SEO efforts?</label>
+          <div class="accordion-item-desc">The timeline for seeing results from SEO can vary based on several factors, such as the competitiveness of keywords, the current state of the website, and the effectiveness of the SEO strategy. Generally, it may take several weeks to months before noticeable improvements occur. However, long-term commitment to SEO is essential for sustained success.</div>
+      </div>
+  
+      <div class="accordion-item">
+          <input type="checkbox" id="accordion3">
+          <label for="accordion3" class="accordion-item-title"><span class="icon"></span>What are the key components of a successful SEO strategy?</label>
+          <div class="accordion-item-desc">A successful SEO strategy involves various components, including keyword research, on-page optimization, quality content creation, link building, technical SEO, and user experience optimization. These elements work together to improve a website's relevance and authority in the eyes of search engines.</div>
+      </div>
+  
+      <div class="accordion-item">
+          <input type="checkbox" id="accordion4">
+          <label for="accordion4" class="accordion-item-title"><span class="icon"></span>How does mobile optimization impact SEO?</label>
+          <div class="accordion-item-desc">Mobile optimization is crucial for SEO because search engines prioritize mobile-friendly websites. With the increasing use of smartphones, search engines like Google consider mobile responsiveness as a ranking factor. Websites that provide a seamless experience on mobile devices are more likely to rank higher in search results.</div>
+      </div>
+  
+      <div class="accordion-item">
+          <input type="checkbox" id="accordion5">
+          <label for="accordion5" class="accordion-item-title"><span class="icon"></span>What is the role of backlinks in SEO, and how can they be acquired?</label>
+          <div class="accordion-item-desc">Backlinks, or inbound links from other websites to yours, play a significant role in SEO. They are considered a vote of confidence and can improve a site's authority. Quality over quantity is crucial when acquiring backlinks. Strategies for obtaining backlinks include creating high-quality content, guest posting, reaching out to industry influencers, and participating in community activities. It's important to focus on natural and ethical link-building practices.</div>
+      </div>
+  
+  </div>
+    <div class="footer">
+      <p>© 2024 Pharmapulse. All rights reserved.</p>
+    </div>
+
+    <script>
+      const chatbox = document.getElementById("chat");
+      const promptInput = document.getElementById("prompt");
+      const generateButton = document.getElementById("generate");
+      const voiceButton = document.getElementById("voiceButton");
+      const languageDropdown = document.getElementById("language");
+      const imageButton = document.getElementById("imageButton");
+      let disease = "",userSymptom = "";
+      let simpleSymptoms = [
+        "suggestion",
+        "suggestions",
+        "advice",
+        "advices",
+        "endorsement",
+        "counsel",
+        "advocacy",
+        "proposal",
+        "approval",
+        "guidance",
+        "prescription",
+        "tip",
+        "referral",
+        "commendation",
+        "approval",
+        "favor",
+        "direction",
+        "recommendation",
+        "recommendations"
+      ];
+      
+      document.getElementById('saveButton').addEventListener('click', function(event) {
+    event.preventDefault();
+    const fullName = document.querySelector('input[name="name"]').value.trim();
+    const email = document.querySelector('input[name="email"]').value.trim();
+    const phoneNumber = document.querySelector('input[name="phone_number"]').value.trim();
+    const oldPassword = document.querySelector('input[name="old_password"]').value.trim();
+    const newPassword = document.querySelector('input[name="new_password"]').value.trim();
+    const confirmPassword = document.querySelector('input[name="confirm_password"]').value.trim();
+
+    let isValid = true;
+
+    function checkInputField(inputValue, errorField) {
+        const errorElement = document.getElementById(errorField);
+        if (inputValue === "") {
+            errorElement.style.display = "block";
+            isValid = false;
+            setTimeout(() => {
+                errorElement.style.display = "none";
+            }, 3000);
+        }
+         else {
+            errorElement.style.display = "none";
+        }
+    }
+
+    checkInputField(fullName, 'fullNameRequired');
+    checkInputField(email, 'emailRequired');
+    // checkInputField(phoneNumber, 'phoneNumberRequired');
+    checkInputField(oldPassword, 'oldpasswordRequired');
+    // checkInputField(newPassword, 'passwordRequired1');
+    // checkInputField(confirmPassword, 'passwordRequired2');
+
+    if (isValid) {
+        // Submit the form using AJAX
+        const formData = new FormData(document.querySelector('form[action="/update"]'));
+        fetch('/update', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                if (data.error === "Passwords do not match") {
+                    document.getElementById('passwordRequired1').style.display = "block";
+                    document.getElementById('passwordRequired1').textContent = "Passwords do not match";
+                    document.getElementById('passwordRequired2').style.display = "block";
+                    document.getElementById('passwordRequired2').textContent = "Passwords do not match";
+                    setTimeout(() => {
+                        document.getElementById('passwordRequired1').style.display = "none";
+                        document.getElementById('passwordRequired2').style.display = "none";
+                    }, 3000);
+                } else {
+                    alert(data.error);
+                }
+            } else {
+                alert(data.success);
+                if (data.success === "Account updated successfully") {
+                    window.location.href='/loginOpen';
+                    // Close popup or refresh page if needed
+                }
+                // Close popup or refresh page if needed
+            }
+        });
+    }
+
+    // Adjust the popup size
+    adjustPopupSize();
+});
+
+function adjustPopupSize() {
+    const popup = document.querySelector('.popup-edit');
+    popup.style.marginTop = 'calc(43vh - ' + (popup.offsetHeight / 2) + 'px)';
+    popup.style.position = 'absolute'; // Optional: Prevent it from pushing other elements
+    popup.style.height = 'auto'; // Allow it to expand automatically based on content
+    popup.style.transition = 'height 0.3s ease'; // Optional: Smooth transition
+}
+      document.addEventListener("DOMContentLoaded",function(){
+        const logo=document.getElementById('logo-link');
+        logo.addEventListener('click',function(){
+          window.location.reload();
+        })
+      })
+
+
+      document.addEventListener("DOMContentLoaded",function(){
+        const popup = document.querySelector('.popup-acc');
+        const closeButton = document.querySelector('.popup-acc .close-btn');
+        const overlay = document.querySelector('.pverlay');
+        const popup_edit=document.querySelector('.popup-edit');
+        const userIcon = document.querySelector('button[value="No"]');
+        userIcon.addEventListener('click', function() {
+          popup.style.display = 'block';
+          overlay.classList.add('active');
+        });
+        closeButton.addEventListener('click', function() {
+          popup.style.display = 'none';
+          overlay.classList.remove('active');
+        });
+        overlay.addEventListener('click', function() {
+          popup.style.display = 'none';
+          popup_edit.style.display = 'none';
+          overlay.classList.remove('active');
+        });
+
+      })
+
+      document.addEventListener("DOMContentLoaded",function(){
+        const popup = document.querySelector('.popup-edit');
+        const closeButton = document.querySelector('.popup-edit .close-btn');
+        const popup_acc=document.querySelector('.popup-acc');
+        const overlay = document.querySelector('.pverlay');
+        const editButton = document.querySelector('button[value="edit"]');
+        const saveButton = document.querySelector('button[value="save"]');
+        editButton.addEventListener('click', function() {
+          popup.style.display = 'block';
+          popup_acc.style.display = 'none';
+          overlay.classList.add('active');
+        });
+        closeButton.addEventListener('click', function() {
+          popup.style.display = 'none';
+          popup_acc.style.display = 'none';
+          overlay.classList.remove('active');
+        });
+        overlay.addEventListener('click', function() {
+          overlay.classList.remove('active');
+          popup.style.display = 'none';
+        });
+        saveButton.addEventListener('click', function() {
+          popup.style.display = 'none';
+          overlay.classList.remove('active');
+          popup_acc.style.display = 'none';
+        });
+
+      })
+
+
+
+      document.addEventListener("DOMContentLoaded", function() {
+      const popup = document.querySelector('.popup-check');
+      const closeButton = document.querySelector('.close-btn');
+      const yesButton = document.querySelector('button[value="Yes"]');
+      const noButton = document.querySelector('button[value="No"]');
+      const overlay = document.querySelector('.overlay');
+      
+      closeButton.addEventListener('click', function() {
+          popup.style.display = 'none';
+      });
+
+      
+
+    //   yesButton.addEventListener('click', function(event) {
+
+    //     fetch('/get_questions')
+    //         .then(response => response.text())
+    //         .then(html => {
+    //             document.body.innerHTML = html;
+    //         })
+    //         .catch(error => {
+    //             console.error('Error fetching template:', error);
+    //         });
+    // });
+
+      noButton.addEventListener('click', function(event) {
+          popup.style.display = 'none';  
+          overlay.classList.remove('active');  
+      });
+      
+      function showPopup() {
+          popup.classList.add('active');
+          overlay.classList.add('active');
+      }
+      
+      function hidePopup() {
+          popup.classList.remove('active');
+          popup.style.display = 'none';
+          overlay.classList.remove('active');
+      }
+    
+      showPopup(); 
+
+      closeButton.addEventListener('click', hidePopup);
+
+      overlay.addEventListener('click', hidePopup);
+  });
+
+
+
+
+      function typingShowcase() {
+        let typingElement = document.createElement("div");
+        typingElement.className = "bot-message";
+        typingElement.innerHTML = "<span>typing...</span>";
+        chatbox.appendChild(typingElement);
+        setTimeout(() => {
+          chatbox.removeChild(typingElement);
+        }, 1000);
+      }
+
+      function appendMessage(message, isUser, isHTML) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = isUser ? "user-message" : "bot-message";
+
+        if (isHTML) {
+          messageDiv.innerHTML = message;
+        } else {
+          messageDiv.innerText = message;
+        }
+
+        chatbox.appendChild(messageDiv);
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+
+      function startVoiceRecognition() {
+        const recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        // Set the language based on the selected option in the dropdown
+        recognition.lang = languageDropdown.value;
+
+        recognition.start();
+
+        recognition.onresult = (event) => {
+          const transcript = event.results[0][0].transcript;
+          promptInput.value = transcript;
+          processUserInput();
+        };
+
+        recognition.onerror = (event) => {
+          console.error("Speech recognition error: " + event.error);
+        };
+
+        recognition.onend = () => {
+          console.log("Speech recognition ended.");
+        };
+      }
+
+      // function get_recommendation(input) {
+      //   const userInput = promptInput.value.toLowerCase();
+      //   const selectedLanguage = languageDropdown.value;
+      //   let botResponse = "";
+      //   console.log(userInput);
+
+      //   fetch("/recommendation", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       suggestion: input,
+      //       predicted_disease: disease,
+      //       symptom: userSymptom,
+      //     }),
+      //   })
+      //     .then((response) => response.json())
+      //     .then((data) => {
+      //       console.log(data);
+      //       botResponse = data[0];
+      //       typingShowcase();
+      //       console.log(1);
+      //       setTimeout(function () {
+      //         appendMessage(botResponse, false, false);
+      //       }, 1000);
+      //       promptInput.value = "";
+      //       // appendMessage(botResponse, false, false);
+      //     })
+      //     .catch((error) => {
+      //       console.error("Error:", error);
+      //     });
+
+      //   promptInput.value = "";
+
+      //   appendMessage(userInput, true, false);
+      // }
+
+      function processInput() {
+        const userInput = promptInput.value.toLowerCase();
+        const selectedLanguage = languageDropdown.value;
+        let botResponse = "";
+
+        var input = document.getElementById("prompt").value;
+        console.log(input);
+        fetch("/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ symptoms: input }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Response from Flask:", data);
+            console.log(data[0]);
+            console.log(data[4]);
+            console.log("yes1")
+            if (data[0]==="Disease not found"||data[0]==="we don't have information about this drug"||data[0]==="we don't have information for this condition") {
+              botResponse = data[0]
+            }
+            else if(data[0]==="hi") 
+            {
+               botResponse = "we cant understand"
+            }
+            else if (data[0].length > 1) {
+              let displayOutput = "";
+              // console.log(data)
+              // console.log(data[0])
+              // console.log(data[0].length)
+              for(let i=0; i<data[0].length;i++) {
+                displayOutput = displayOutput + data[0][i] +"\n"
+              }
+              if (data[1]==='no'){
+              botResponse = "Drugs that can be used are:"+"\n"+"\n"+displayOutput+"\n"+"these are just suggestions, please consult a doctor before taking any medication."
+              }
+              else if(data[1]==='yes'){
+                botResponse = "जिन दवाओं का उपयोग किया जा सकता है वे हैं:"+"\n"+"\n"+displayOutput+"\n"+"ये सिर्फ सुझाव हैं, कृपया कोई भी दवा लेने से पहले डॉक्टर से सलाह लें।"
+              }
+            }
+            else if ((data[3].startsWith("i am") ||data[3].startsWith("can") || data[3].startsWith("what") ||userInput.startsWith("tell")) && data[4]==0) {
+              console.log("yes2")
+               let description = "Drug Description: " + "\n"
+               let dosage = "Drug dosage" + "\n"
+               let sideEffects = "Drug sideEffects" + "\n"
+               for(let i=0;i<data[0][0].description.length;i++) {
+                description = description + data[0][0].description[i] + "\n";
+                console.log(description)
+               }
+               if(data[0][0].dosage == []) {
+                 dosage = dosage + "No dosage for this drug";
+                } else {
+                 for(let i=0;i<data[0][0].dosage.length;i++) {
+                  dosage = dosage + data[0][0].dosage[i] + "\n";
+                  console.log(dosage)
+                 }
+               }
+               if(data[0][0].side_effects == []) {
+                sideEffects = sideEffects + "No Side Effects";
+                } else {
+                 for(let i=0;i<data[0][0].side_effects.length;i++) {
+                  sideEffects = sideEffects + data[0][0].side_effects[i] + "\n";
+                  console.log(sideEffects)
+                 }
+               }
+              console.log(description,dosage,sideEffects)
+              if(data[1]===0 && data[2]===0) {
+                botResponse="Since the drugs you are already using for your existing health conditions aren’t common. It is preferable to see a doctor before considering the suggested drugs from our chatbot."+"\n"+ "\n" + description + "\n" + dosage +"\n" + sideEffects
+              }
+              else {
+                botResponse = description + "\n" + dosage +"\n" + sideEffects
+              } 
+              // botResponse = description + "\n" + dosage +"\n" + sideEffects
+            }
+            else if((data[3].startsWith("i am") || data[3].startsWith("i'm")|| data[3].startsWith("can") || data[3].startsWith("what") ||data[3].startsWith("tell"))&&data[4]===1) {
+              console.log("yes3")
+              let description = "दवा का विवरण: " + "\n"
+              let dosage = "दवा की मात्रा:" + "\n"
+              let sideEffects = "दवा के दुष्प्रभाव:" + "\n"
+              for(let i=0;i<data[0].description.length;i++) {
+               description = description + data[0].description[i] + "\n";
+               console.log(description)
+              }
+              if(data[0].dosage == []) {
+                dosage = dosage + "इस दवा के लिए कोई मात्रा नहीं";
+               } else {
+                for(let i=0;i<data[0].dosage.length;i++) {
+                 dosage = dosage + data[0].dosage[i] + "\n";
+                 console.log(dosage)
+                }
+              }
+              if(data[0].side_effects == []) {
+               sideEffects = sideEffects + "कोई दुष्प्रभाव नहीं";
+               } else {
+                for(let i=0;i<data[0].side_effects.length;i++) {
+                 sideEffects = sideEffects + data[0].side_effects[i] + "\n";
+                 console.log(sideEffects)
+                }
+              }
+              console.log(data[1],data[2]) 
+             console.log(description,dosage,sideEffects)
+             if(data[1]===0 && data[2]===0) {
+               botResponse="आपके मौजूदा स्वास्थ्य स्थितियों के लिए आपके द्वारा पहले से ही उपयोग की जा रही दवाएं सामान्य नहीं हैं। हमारे चैटबॉट से सुझाई गई दवाओं को विचार करने से पहले डॉक्टर से मिलना अधिक उत्तम है।"+"\n"+ "\n" + description + "\n" + dosage +"\n" + sideEffects
+            }
+            else {
+                botResponse = description + "\n" + dosage +"\n" + sideEffects
+              } 
+          }
+            else {
+              botResponse = data[0]
+            }
+            // console.log(data[0]);
+            /*if(data[0]==='Minor Disease'){
+              botResponse = "It seems like you have a minor disease. take enough rest and drink plenty of water. If the symptoms persist, consult a doctor.";
+            }
+            else if(data[0]==='UnabletoPredict'){
+              //botResponse = "Unable to predict disease, give some more information related to your symptoms";
+              botResponse = "For adults and children over 12:\n 500 mg to 1000 mg in the morning, afternoon, and evening, up to 4000 mg per day.\n\nFor children ages 6-12:\n 250 mg to 500 mg in the morning, afternoon, and evening, up to 3000 mg per day. ​"
+            }
+           else if(data[0]==='Severe Disease'){
+              botResponse = "It seems like you have a severe disease. Please consult a doctor immediately.";
+            }
+            else if (data.length === 2) {
+              if(data[1]==='Minor Disease'){
+                botResponse="ऐसा लगता है कि आपको कोई मामूली बीमारी है। पर्याप्त आराम करें और खूब पानी पिएं। यदि लक्षण बने रहते हैं, तो डॉक्टर से परामर्श करें।";
+              }
+              else if(data[1]==='UnabletoPredict'){
+                botResponse = "बीमारी की भविष्यवाणी करने में असमर्थ, अपने लक्षणों से संबंधित अधिक जानकारी दें";
+              }
+              else if(data[1]==='Severe Disease'){
+                botResponse = "ऐसा लगता है कि आपको गंभीर बीमारी है। कृपया तुरंत डॉक्टर से परामर्श करें।";
+              }
+              else{
+              botResponse =
+                "Predicted Disease (original): " +
+                data[0] +
+                "\n" +
+                "predicted Disease: " +
+                data[1] + "\n" + "\n" +
+              `ऐसी संभावना है कि आप जिन लक्षणों का अनुभव कर रहे हैं, वे "${data[0]}" जैसी अंतर्निहित स्थिति का संकेत दे सकते हैं। उचित निदान और उचित प्रबंधन के लिए एक स्वास्थ्य देखभाल पेशेवर से परामर्श करना महत्वपूर्ण है।.`
+              disease = data[1];
+            } 
+          }
+          else {
+              //botResponse = "Predicted Disease: " + data[0] + "\n" + "\n" +
+              //`There is a possibility that the symptoms you are experiencing could indicate an underlying condition such as "${data[0]}". It's important to consult a healthcare professional for a proper diagnosis and appropriate management`;
+              botResponse = "You can use Paracetamol. Paracetamol Can Be Used For curing Headaches, but has some side effects like Nausea or vomiting or some allergic reactions like rashes or itching."
+              disease = data[0];
+            }*/
+            // botResponse = data[0];
+            disease = data[0];
+            userSymptom = input;
+            typingShowcase();
+            setTimeout(function () {
+              appendMessage(botResponse, false, false);
+            }, 1000);
+            // appendMessage(botResponse, false, false);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+
+        promptInput.value = "";
+
+        appendMessage(userInput, true, false);
+        // appendMessage(botResponse, false, false);
+      }
+
+      function check(input) {
+        if (input === "hi" || input === "hello") {
+          //botResponse =
+          //  "Hello! How can I assist you with your healthcare needs today?";
+          botResponse = "Hello! How Can I help you today?"
+          appendMessage(input, true, false);
+          typingShowcase();
+          setTimeout(function () {
+            appendMessage(botResponse, false, false);
+          }, 1000);
+          promptInput.value = "";
+        } else if (input === "thank you" || input === "thanks") {
+          botResponse =
+            "Thank you! If you have any health-related questions or need assistance, feel free to ask.";
+          appendMessage(input, true, false);
+          typingShowcase();
+          setTimeout(function () {
+            appendMessage(botResponse, false, false);
+          }, 1000);
+          promptInput.value = "";
+        } else {
+          processInput();
+        }
+      }
+
+      function checkAgain(input) {
+        let r = input.split(" ").some((x) => simpleSymptoms.includes(x));
+        if (r) {
+          console.log(1);
+          console.log(disease);
+          if (disease !== "") {
+            console.log(disease)
+            console.log('000000');
+            get_recommendation(input);
+            disease="";
+          }
+          else {
+            console.log(200000);
+            console.log(disease)
+            appendMessage(input, true, false);
+            typingShowcase();
+            setTimeout(function () {
+              appendMessage("unable to predict disease, give more information related to your symptoms.", false, false);
+            }, 1000);
+            promptInput.value = "";
+          }
+        } else {
+          check(input);
+        }
+      }
+
+      voiceButton.addEventListener("click", startVoiceRecognition);
+      generateButton.addEventListener("click", function () {
+        if (promptInput.value!=="") {
+          let input = promptInput.value.toLowerCase();
+          checkAgain(input);
+        } else {
+          alert("Enter a valid Iput");
+        }
+      });
+      promptInput.addEventListener("keyup", function (event) {
+        if (event.key === "Enter") {
+          if (promptInput.value!=="") {
+            let input = promptInput.value.toLowerCase();
+            console.log(userSymptom);
+            checkAgain(input);
+          } else {
+            alert("Enter a valid Iput");
+          }
+        }
+      });
+      function openImageInput() {
+        var imageInput = document.getElementById("imageInput");
+        imageInput.click();
+      }
+
+      document.getElementById("imageInput").addEventListener("change", function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+          var img = document.createElement("img");
+          img.src = e.target.result;
+          img.classList.add('user-image');
+          chatbox.appendChild(img);
+        };
+
+        reader.readAsDataURL(file);
+        var formData = new FormData();
+        formData.append('image', file);
+
+        // Sending the image data to Flask server using Fetch API
+        fetch('/predict_image', {
+          method: 'POST',
+          body: formData
+        })
+        .then((response) =>  response.json()  )
+        .then((data) => {
+          console.log(data);
+          botResponse = data[0];
+          typingShowcase();
+          setTimeout(function () {
+            appendMessage(botResponse, false, false);
+          }, 1000);
+        })
+        .catch(error => console.error('Error uploading image:', error));
+      });
+
+      document.getElementById('logo-link').addEventListener('click', function(event) {
+            location.reload(); // Reload the page
+            event.preventDefault(); // Prevent the default behavior of anchor tag
+        });
+    </script>
+    
+
+ <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  </body>
+</html>

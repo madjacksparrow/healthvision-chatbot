@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pharmapulse Chatbot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <!-- <link rel="stylesheet" href="/static/css/chatbot.css" ; /> -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='liq.css') }}"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    .queshead {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 30px;
+    }
+    .queshead h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e73441;
+    }
+    .queshead h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #000;
+    }
+    .ques-cont {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      margin-top: 60px;
+      padding: 20px;
+    }
+    .ques-no {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-right: 20px;
+    }
+    .ques-no h3 {
+      font-size: 1.5rem;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 45px;
+      font-weight: 700;
+      color: #fff;
+      background-color: #e73441;
+      border-radius: 60%;
+    }
+    .ques {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-left: 10px;
+      width: 50%;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 0 10px rgba(251, 12, 12, 0.315);
+    }
+    .ques h3 {
+      font-size: 1.4rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: #000;
+    }
+    .options {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      gap: 40px;
+    }
+    .option {
+      display: flex;
+      flex-direction: row;
+    }
+    .option button {
+      font-size: 1.2rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #e73441;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid #e73441;
+    }
+    .option button:hover {
+      background-color: #e73441;
+      color: #fff;
+    }
+    .option button:active {
+      transform: scale(0.95);
+      background-color: #e73441;
+      color: #fff;
+    }
+    .chatbotgif {
+      position: fixed;
+      margin-left: 80%;
+      /* margin-top: 50px; */
+      margin-bottom: 20%;
+      /* margin-right: 10%; */
+    }
+    .chatbotgif img {
+      width: 200px;
+      height: 200px;
+    }
+    .prev-next {
+      display: flex;
+      justify-content: space-between;
+      padding-left: 30%;
+      padding-right: 25%;
+      align-items: center;
+      flex-direction: row;
+      margin-top: 20px;
+      gap: 20px;
+    }
+    .prev,
+    .next,.submit {
+      font-size: 1.2rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #e73441;
+      align-items: space-between;
+      justify-content: space-between;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .prev:hover,
+    .next:hover {
+      transform: scale(0.95);
+    }
+    .reportgif {
+      position: fixed;
+      margin-left: 30px;
+      margin-top: -30px;
+    }
+    .reportgif img {
+      width: 300px;
+      height: 300px;
+    }
+
+    .ques-cont-active {
+      display: none;
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    input[type="radio"] + label {
+      display: inline-block;
+      cursor: pointer;
+      padding: 10px 20px; /* Adjust padding as needed */
+      background-color: #fff; /* Button background color */
+      border: 1px solid #ccc; /* Button border */
+      border-radius: 5px;
+      font-weight: 600; /* Button border radius */
+      color: #333; /* Button text color */ /* Button font */
+      text-align: center;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="radio"] + label:hover {
+      background-color: #fff; /* Button background color on hover */
+      transform: scale(0.95);
+    }
+
+    /* Style the custom radio button label when checked */
+    input[type="radio"]:checked + label {
+      background-color: #e73441; /* Button background color when checked */
+      color: #fff; /* Button text color when checked */
+    }
+
+    input {
+      margin-top: 5px;
+      width: 120%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      outline: none;
+      border-radius: 5px;
+    }
+
+    label {
+      font-size: 1.2rem;
+      font-weight: 500;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      color: #e73441;
+    }
+  </style>
+  <body>
+    <div class="queshead">
+      <h1>Pharmapulse ChatBot</h1>
+      <h3>Ask about your health and receive personalized advice.</h3>
+    </div>
+    <div class="ques-cont" id="one">
+      <div class="ques-no">
+        <h3>1</h3>
+      </div>
+      <div class="ques">
+        <h3>Do you have Blood Pressure?</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes1" value="yes" class="mm" name="bp" />
+            <label for="yes1">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no1" value="no" class="mm" name="bp" />
+            <label for="no1">No</label>
+          </div>
+          <div class="option">
+            <input type="text" id="bpd" class="mm" name="bpd" placeholder="if yes Enter drug name..."/>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="ques-cont ques-cont-active" id="two">
+      <div class="ques-no">
+        <h3>2</h3>
+      </div>
+      <div class="ques">
+        <h3>Do you have any Heart Disease?</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes2" value="yes" class="mm" name="heart" />
+            <label for="yes2">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no2" value="no" class="mm" name="heart" />
+            <label for="no2">No</label>
+          </div>
+          <div class="option">
+            <input type="text" id="hpd" class="mm" name="hpd" placeholder="if yes Enter drug name..."/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ques-cont ques-cont-active" id="three">
+      <div class="ques-no">
+        <h3>3</h3>
+      </div>
+      <div class="ques">
+        <h3>Do you have any Diabetes?</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes3" value="yes" class="mm" name="diabetes" />
+            <label for="yes3">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no3" value="no" class="mm" name="diabetes" />
+            <label for="no3">No</label>
+          </div>
+          <div class="option">
+            <input type="text" id="dpd" class="mm" name="dpd" placeholder="if yes Enter drug name..."/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ques-cont ques-cont-active" id="four">
+      <div class="ques-no">
+        <h3>4</h3>
+      </div>
+      <div class="ques">
+        <h3>Do you consume alcohol or use any other tobacco products</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes4" value="yes" class="mm" name="alcohol" />
+            <label for="yes4">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no4" value="no" class="mm" name="alcohol" />
+            <label for="no4">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- 
+    <div class="ques-cont ques-cont-active" id="four">
+      <div class="ques-no">
+        <h3>4</h3>
+      </div>
+      <div class="ques">
+        <h3>
+          Do you have any stressors that significantly impact your well-being?
+        </h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes1" value="yes" class="mm" name="stress" />
+            <label for="yes1">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no1" value="no" class="mm" name="stress" />
+            <label for="no1">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ques-cont ques-cont-active" id="five">
+      <div class="ques-no">
+        <h3>5</h3>
+      </div>
+      <div class="ques">
+        <h3>Do you smoke cigarettes or use any tobacco products?</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes2" value="yes" class="mm" name="tobacco" />
+            <label for="yes2">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no2" value="no" class="mm" name="tobacco" />
+            <label for="no2">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ques-cont ques-cont-active" id="six">
+      <div class="ques-no">
+        <h3>6</h3>
+      </div>
+      <div class="ques">
+        <h3>How often do you consume alcohol, and in what quantities?</h3>
+        <div class="options">
+          <div class="option">
+            <input type="radio" id="yes3" value="yes" class="mm" name="alcohol" />
+            <label for="yes3">Yes</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="no3" value="no" class="mm" name="alcohol" />
+            <label for="no3">No</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ques-cont ques-cont-active" id="seven">
+      <div class="ques-no">
+        <h3>7</h3>
+      </div>
+      <div class="ques">
+        <h3>what are your typical work hours?</h3>
+        <div class="options">
+          <div class="option">
+            <input
+              type="radio"
+              id="ds"
+              value="dayshift"
+              class="mm"
+              name="work"
+            />
+            <label for="ds">Day Shift</label>
+          </div>
+          <div class="option">
+            <input
+              type="radio"
+              id="ns"
+              value="nightshift"
+              class="mm"
+              name="work"
+            />
+            <label for="ns">Night Shift</label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ques-cont ques-cont-active" id="eight">
+      <div class="ques-no">
+        <h3>8</h3>
+      </div>
+      <div class="ques">
+        <h3>
+          How much time do you spend on screens (e.g., smartphones, computers)
+          each day?
+        </h3>
+        <div class="options">
+          <div class="option">
+            <input type="number" id="hours2" value="0" class="mm" name="screen"/>
+            <label for="hours2">Hours</label>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div class="ques-cont ques-cont-active" id="five">
+      <div class="ques-no">
+        <h3>5</h3>
+      </div>
+      <div class="ques">
+        <h3>
+          Are there any existing medical conditions or health concerns you have?
+        </h3>
+        <div class="options">
+          <div class="option">
+            <input type="text" id="disease" class="mm" name="disease" placeholder="Enter disease/condition..."/>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prev-next">
+      <button class="prev"><i class="bx bx-chevron-left"></i> Previous</button>
+      <button class="next">
+        Next
+        <i class="bx bx-chevron-right"></i>
+      </button>
+      <but class="submit" style="display:none" onclick="submit_form()">
+        Submit 
+      </button>
+      </button>
+    </div>
+
+    <!-- <div class="chatbotgif">
+      <img src="/static/Medical-prescription.webp" alt="chatbot" />
+    </div> -->
+  
+    <script>
+       let selectedQuestion = 1;
+      const next = document.querySelector(".next");
+      const prev = document.querySelector(".prev");
+       const ques = document.querySelector(".ques");
+      const quesno = document.querySelector(".ques-no h3");
+      const options = document.querySelectorAll(".mm");
+      let i = 1;
+      const patientDetails = {
+        bp: "No",
+        bpd:"None",
+        heart: "No",
+        diabetes: "No",
+        dpd:"None",
+        hpd:"None",
+        alcohol: "No",
+        disease: "None",
+      };
+      
+      const containers = document.querySelectorAll('.ques-cont');
+
+      // Iterate over each container
+      containers.forEach((container, index) => {
+        // Get all radio inputs within the current container
+        const radioInputs = container.querySelectorAll('input[type="radio"]');
+
+        // Add event listener to each radio input within the current container
+        radioInputs.forEach(input => {
+          input.addEventListener('change', function() {
+            // Get the selected value within the current container
+            const name = input.name;
+            const value = input.value;
+            patientDetails[name] = value;
+
+            // if (index===2 || index===3) {
+            //   hoursInputStore(index);
+            // } else {
+             const selectedValue = container.querySelector('input[name="' + input.name + '"]:checked').value;
+             console.log(selectedValue,index); // You can store this value in a variable or perform any other action with it
+             console.log(patientDetails);
+          //  }
+          });
+        });
+      });
+    
+
+      function checkPrev(i = 1) {
+        if (i === 1) {
+          prev.style.display = "none";
+        } else {
+          prev.style.display = "block";
+        }
+        document.querySelector(".submit").style.display = "none";
+      }
+
+      function checkNext(i = 5) {
+        if (i === 5) {
+          next.style.display = "none";
+        } else {
+          next.style.display = "block";
+        }
+        
+      }
+
+      function checkSubmit() {
+        if (i === 5) {
+          submit.style.display = "block";
+        } else {
+          submit.style.display = "none";
+        }
+      }
+
+      function getEquivalentWord(x = 1) {
+        let text = "";
+        switch (x) {
+          case 1:
+            text = "one";
+            break;
+          case 2:
+            text = "two";
+            break;
+          case 3:
+            text = "three";
+            break;
+          case 4:
+            text = "four";
+            break;
+          case 5:
+            text = "five";
+            break;
+          default:
+            text = "one";
+            break;
+        }
+        return text;
+      }
+
+      function hoursInputStore(index) {
+        let hour;
+        // if (index===3 || index===8) {
+        //   if (index===3) {
+        //     hour = document.getElementById('hours1').value;
+        //     patientDetails['sleep'] = hour;
+        //     // console.log(h1);
+        //   } else if (index===8) {
+        //     hour = document.getElementById('hours2').value;
+        //     patientDetails['screen'] = hour;
+        //     // console.log(h2);
+        //   }
+        //   console.log(hour,index);
+        //   console.log(patientDetails);
+        // }
+      }
+
+      function toDisplaySelectedQuestion(toSelect, toDelete) {
+        if (toSelect < 1) {
+          toSelect = 1;
+          toDelete = 0;
+          checkPrev(toSelect);
+        } else if (toSelect == 5) {
+          checkNext(toSelect);
+          document.querySelector(".submit").style.display = "block";
+        } else {
+          checkNext(toSelect);
+          checkPrev(toSelect);
+        }
+        
+        const selectedQuestion = document.getElementById(
+          getEquivalentWord(toSelect)
+        );
+        const deletedQuestion = document.getElementById(
+          getEquivalentWord(toDelete)
+        );
+
+        selectedQuestion.classList.remove("ques-cont-active");
+        deletedQuestion.classList.add("ques-cont-active");
+      }
+
+      next.addEventListener("click", () => {
+        hoursInputStore(i);
+        i++;
+        toDisplaySelectedQuestion(i, i - 1);
+      });
+
+      prev.addEventListener("click", () => {
+        hoursInputStore(i);
+        i--;
+        toDisplaySelectedQuestion(i, i + 1);
+      });
+
+      checkPrev();
+
+      function submit_form() {
+        event.preventDefault();
+        patientDetails['disease'] = document.getElementById('disease').value;
+        patientDetails['bpd'] = document.getElementById('bpd').value;
+        patientDetails['dpd'] = document.getElementById('dpd').value;
+        patientDetails['hpd'] = document.getElementById('hpd').value;
+        fetch('/questions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(patientDetails),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Success:', data);
+            // window.location.href = '/report';
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+
+          fetch('/loginOpen', {
+            method: 'GET', // or 'POST' if your route accepts POST requests
+            headers: {
+                'Content-Type': 'application/json', // or any other content type your route expects
+            },
+            // You can include any data you want to send to your Flask route in the body
+            // body: JSON.stringify({ key: value }),
+        })      
+        .then ((response) => window.location.href = "/loginOpen")
+        .catch((error) => {
+          console.error('Error:', error);
+        });                      
+        console.log(patientDetails);
+      }
+
+    </script>
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+.venv/
+env/
+.idea/
+
+# Node
+node_modules/
+dist/
+build/
+
+# General
+.DS_Store
+*.log
+*.tmp
+
+# Claude Code tooling
+.claude/

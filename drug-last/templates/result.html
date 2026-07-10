@@ -1,0 +1,509 @@
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Pharmapulse ChatBot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <!-- <link rel="stylesheet" href="/chatbot.css"> -->
+    <link
+      rel="stylesheet"
+      href="/static/liq.css"
+    />
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+    <style>
+      .outer{
+      display: flex;
+      /* justify-content: center; */
+      align-items: start;
+      flex-direction: row;
+      padding-bottom: 20px;
+      }
+      .queshead {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin-top: 30px;
+    }
+    .queshead h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #e73441;
+    }
+    .queshead h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #000;
+    }
+.container{
+  margin-top: 70px;
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  padding: 25px 80px;
+  margin-left: 200px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+.container2{
+  margin-top: 50px;
+  display: flex;
+  align-items: start;
+  margin-left: 100px;
+  width: auto;
+  height: auto;
+  /* padding: 25px 30px; */
+  background-color: #ffffff;
+  border-radius: 5px;
+  /* box-shadow: 0 5px 10px rgba(0,0,0,0.15); */
+  
+}
+.container .title{
+  position: relative;
+  margin-left: 35%;  
+  font-size: 25px;
+  font-weight: 600;
+  color:#e73441;
+}
+.container .title::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 30px;
+  border-radius: 5px;
+  background: #e73441;
+}
+.content form .user-details .input-box input[type=text]{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: space-between;
+  margin: 20px 200px 12px 0;
+  color:#0033ff;
+}
+form .user-details .input-box{
+  margin-bottom: 5px;
+  width: 100%;
+  color:#1e1717;
+  margin-top: 15px;
+}
+form .input-box span.details{
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.user-details .input-box input{
+  height: 45px;
+  width: 300px;
+  outline: none;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+  color:#222327;
+}
+.user-details .input-box input:focus,
+.user-details .input-box input:after{
+  border-color: #e73441;
+
+}
+textarea{
+  width:100%;
+  font-size: 16px;
+  border-radius: 5px;
+  padding-left: 15px;
+  border: 1px solid #ccc;
+  border-bottom-width: 2px;
+  transition: all 0.3s ease;
+  color:#222327;
+}
+textarea:focus, textarea:valid {
+  border-color: #e73441;
+}
+ form .gender-details .gender-title{
+  font-size: 20px;
+  font-weight: 500;
+ }
+ form .category{
+   display: flex;
+   width: 80%;
+   margin: 14px 0 ;
+   justify-content: space-between;
+ }
+ form .category label{
+   display: flex;
+   align-items: center;
+   cursor: pointer;
+ }
+ form .category label .dot{
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background: #e1e1e1;
+  border: 5px solid transparent;
+  transition: all 0.3s ease;
+}
+ #dot-1:checked ~ .category label .one,
+ #dot-2:checked ~ .category label .two,
+ #dot-3:checked ~ .category label .three{
+   background: #6e1e1e;
+   border-color: #842c2c;
+ }
+ form input[type="radio"]{
+   display: none;
+ }
+ 
+ form input[type="file"]{
+  color: darkblue;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding:10px 20px;
+  border-radius: 5px;
+}
+
+
+ form .button{
+   height: 45px;
+   margin: 35px 0;
+ }
+ form .button .input{
+   height: 100%;
+   width: 100%;
+   border-radius: 5px;
+   border: none;
+   color: white;
+   font-size: 18px;
+   font-weight: 500;
+   letter-spacing: 1px;
+   cursor: pointer;
+   transition: all 0.3s ease;
+   background: #e73441;
+ }
+ .disclaimer-container {
+  /* background-color: #fff; */
+  color: #e73441;
+  padding: 20px;
+  /* box-shadow: 0 2px 4px rgba(0,0,0,0.1); */
+  border-radius: 8px;
+  width: auto;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  position: relative;
+  /* display: flex;
+  flex-direction: row;
+  justify-content: center; */
+  /* background-color: red; */
+  margin-left: 200px;
+  margin-right: 300px;
+}
+.disclaimer-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-right 30s ease-out infinite;
+}
+.disclaimer-text b {
+  color: #e73441;
+}
+.disclaimer-text p {
+  font-size: larger;
+}
+@keyframes scroll-right {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+
+button{
+  overflow: visible;
+  position: relative;
+  /* justify-content: center; */
+  margin-left: 30%;
+  margin-top: 20px;
+  margin-bottom: 35px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  height: 45px;
+  width: 170px;
+  color: #fff;
+  text-transform: uppercase;
+  background: #e73441;
+  border-radius: 10px;
+
+}
+button:hover{
+  overflow: visible;
+  position: relative;
+  /* float: right; */
+  margin-left: 30%;
+  margin-top: 20px;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  height: 45px;
+  width: 170px;
+  color: #e73441;
+  border: 1px solid #e73441;
+  text-transform: uppercase;
+  background:  #ffffff;
+  border-radius: 10px;
+}
+.popup{
+  position:fixed;
+  top:-150%;
+  left:50%;
+  opacity:0;
+  transform:translate(-50%,-50%) scale(1.25);
+  width:380px;
+  padding:20px 30px;
+  background:#fff;
+  box-shadow: 2px 2px 5px 5px rgba(0,0,0,0.15);
+  border-radius:10px;
+  transition: top 0ms ease-in-out 200ms,opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
+
+}
+.popup.active{
+  top:50%;
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
+
+  transition: top 0ms ease-in-out 0ms,opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
+}
+.popup .close-btn{
+  position:absolute;
+  top: 10px;
+  right: 10px;
+  width: 15px;
+  height: 15px;
+  background: #888;
+  color:#eee;
+  text-align: center;
+  line-height: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+}
+.popup .close-btn:hover{
+  background: red;
+}
+.popup .form h2{
+  text-align: center;
+  color: #f6685e;
+  margin: 10px 0px 20px;
+  font-size: 22px;
+}
+.popup .form .form-element{
+  margin: 10px 0px;
+}
+.popup .form .form-element label{
+  font-size: 16px;
+  color: #222;
+}
+.popup .form .form-element input[type="text"]{
+  margin-top: 5px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 5px;
+}
+select{
+  margin-top: 5px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  border-radius: 5px;
+  background-color: #FFF;
+}
+.input-box input[type="checkbox"]
+{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+}
+.input-box input[type="checkbox"]:active
+{
+  background: #f6685e;
+  border: none;
+}
+.chatbotgif img{
+  width: 650px;
+  height: 650px;
+  margin-top: 0px;
+  margin-left: 50px;
+}
+.other  a{
+  text-decoration: none;
+  color: #e73441;
+  font-size: 1rem;
+  font-weight: 500;
+}
+p{
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #000;
+}
+.ways{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 20px;
+}
+.alerts
+{
+  color:red;
+  text-align: center;
+}
+.ways .button a{
+    color:#e73441;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1px solid #e73441;
+}
+.ways .button input{
+    color:#e73441;
+    text-decoration: none;
+    background-color: #fff;
+    margin-top: -10px;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1px solid #e73441;
+}
+.popupcont{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(217, 210, 210, 0.5);
+  display: none;
+}
+.rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+.rating:not(:checked) > input {
+  position: absolute;
+  appearance: none;
+}
+
+.rating:not(:checked) > label {
+  float: right;
+  cursor: pointer;
+  font-size: 30px;
+  color: #666;
+}
+
+.rating:not(:checked) > label:before {
+  content: '★';
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked + label:hover ~ label,
+.rating > input:checked ~ label:hover,
+.rating > input:checked ~ label:hover ~ label,
+.rating > label:hover ~ input:checked ~ label {
+  color: #e58e09;
+}
+
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+  color: #ff9e0b;
+}
+
+.rating > input:checked ~ label {
+  color: #ffa723;
+}
+    </style>
+        <div class="queshead">
+          <h1>Pharmapulse ChatBot</h1>
+          <h3>Ask about your health and receive personalized advice. </h3>
+        </div>
+        <div class="disclaimer-container">
+          <div class="disclaimer-text">
+            <p><b>Disclaimer :</b> Since it's been 3 days from the date of login kindly provide the review of the drug you have recently searched from our chatbot</p>
+          </div>
+      </div>
+  <div class="outer">
+    <div class="container">
+    <div class="title"> FEEDBACK </div>
+    <br>
+    <div class="content">
+      <form action = "/go_to_chatbot" method="POST">
+        <div class="user-details">
+          <div class="input-box">
+            <span class="details">Drug Name:</span>
+            <input type="text" id = "dg" name="dg" placeholder="Enter your drug name" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Condition:</span>
+            <input type="text" id = "cd" name="cd" placeholder="Type your Condition" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Feedback:</span>
+            <input type="text" id ="fb" name="fb" placeholder="Enter your Feedback" required>
+          </div>
+          <div class="input-box">
+            <span class="details">Rating:</span>
+            <div class="rating">
+              <input value="5" name="rate" id="star5" type="radio">
+              <label title="text" for="star5"></label>
+              <input value="4" name="rate" id="star4" type="radio">
+              <label title="text" for="star4"></label>
+              <input value="3" name="rate" id="star3" type="radio" checked="">
+              <label title="text" for="star3"></label>
+              <input value="2" name="rate" id="star2" type="radio">
+              <label title="text" for="star2"></label>
+              <input value="1" name="rate" id="star1" type="radio">
+              <label title="text" for="star1"></label>
+            </div>
+          </div>
+          <button type="submit">Submit</button>
+      </form>
+      </div>
+    </form>
+    </div>
+  </div>
+  <div class="container2">
+    <div class="chatbotgif">
+      <img src="/static/doctor-animate.gif" alt="chatbot">
+  </div>
+</div>
+</div>
+</body>
+</html>

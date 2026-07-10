@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <title>Pharmapulse ChatBot</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <!-- <link rel="stylesheet" href="/chatbot.css"> -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='liq.css') }}"
+    />
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+<body>
+  <style>
+    .outer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    /* background-color: red; */
+    }
+
+
+    .queshead {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+  }
+  .queshead h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #e73441;
+  }
+  .queshead h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #000;
+  }
+.container{
+margin-top: 50px;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 600px;
+height: auto;
+/* overflow-y: scroll; */
+padding: 25px 30px;
+border-radius: 5px;
+box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+.container .title{
+position: relative;
+font-size: 25px;
+font-weight: 600;
+color: #e73441;
+}
+.container .title::before{
+content: "";
+position: absolute;
+left: 0;
+bottom: 0;
+height: 3px;
+width: 30px;
+border-radius: 5px;
+background: #e73441;
+}
+.content form .user-details{
+display: flex;
+flex-wrap: wrap;
+justify-content: space-between;
+margin: 20px 0 12px 0;
+color:#222327;
+}
+
+
+form .user-details .input-box{
+margin-bottom: 15px;
+width: calc(100% / 2 - 20px);
+color:#222327;
+}
+form .input-box span.details{
+display: block;
+font-weight: 500;
+margin-bottom: 5px;
+}
+.user-details .input-box input{
+height: 45px;
+width: 100%;
+outline: none;
+font-size: 16px;
+border-radius: 5px;
+padding-left: 15px;
+border: 1px solid #ccc;
+border-bottom-width: 2px;
+transition: all 0.3s ease;
+color:#222327;
+}
+.user-details .input-box input:focus,
+.user-details .input-box input:after{
+border-color: #e73441;
+
+}
+textarea{
+width:100%;
+font-size: 16px;
+border-radius: 5px;
+padding-left: 15px;
+border: 1px solid #ccc;
+border-bottom-width: 2px;
+transition: all 0.3s ease;
+color:#222327;
+}
+textarea:focus, textarea:valid {
+border-color: #e73441;
+}
+form .gender-details .gender-title{
+font-size: 20px;
+font-weight: 500;
+}
+form .category{
+ display: flex;
+ width: 80%;
+ margin: 14px 0 ;
+ justify-content: space-between;
+}
+form .category label{
+ display: flex;
+ align-items: center;
+ cursor: pointer;
+}
+form .category label .dot{
+height: 18px;
+width: 18px;
+border-radius: 50%;
+margin-right: 10px;
+background: #e1e1e1;
+border: 5px solid transparent;
+transition: all 0.3s ease;
+}
+#dot-1:checked ~ .category label .one,
+#dot-2:checked ~ .category label .two,
+#dot-3:checked ~ .category label .three{
+ background: #6e1e1e;
+ border-color: #842c2c;
+}
+form input[type="radio"]{
+ display: none;
+}
+form input[type="file"]{
+color: darkblue;
+font-size: 20px;
+font-weight: 500;
+letter-spacing: 1px;
+cursor: pointer;
+transition: all 0.3s ease;
+padding:10px 20px;
+border-radius: 5px;
+}
+
+
+form .button{
+ height: 45px;
+ margin: 35px 0;
+}
+form .button input{
+ height: 100%;
+ width: 100%;
+ border-radius: 5px;
+ border: none;
+ color: white;
+ font-size: 18px;
+ font-weight: 500;
+ letter-spacing: 1px;
+ cursor: pointer;
+ transition: all 0.3s ease;
+ background: #e73441;
+}
+form .button input:hover{
+transform: scale(0.99);
+background: white;
+color: #e73441;
+border: 1px solid #e73441;
+}
+
+button{
+overflow: visible;
+position: relative;
+float: right;
+border: 0;
+padding: 0;
+cursor: pointer;
+height: 40px;
+width: 110px;
+color: #fff;
+text-transform: uppercase;
+background: #e73441;
+border-radius: 10px;
+
+}
+button:hover{
+overflow: visible;
+position: relative;
+float: right;
+border: 0;
+padding: 0;
+cursor: pointer;
+height: 40px;
+width: 110px;
+color: #e73441;
+border: 1px solid #e73441;
+text-transform: uppercase;
+background: white;
+border-radius: 10px;
+}
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+opacity:0;
+transform:translate(-50%,-50%) scale(1.25);
+width:380px;
+padding:20px 30px;
+background:#fff;
+box-shadow: 2px 2px 5px 5px rgba(0,0,0,0.15);
+border-radius:10px;
+transition: top 0ms ease-in-out 200ms,opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
+z-index: 1000;
+opacity: 1
+}
+.popup.active{
+top:50%;
+opacity:1;
+transform:translate(-50%,-50%) scale(1);
+transition: top 0ms ease-in-out 0ms,opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
+}
+.popup .close-btn{
+position:absolute;
+top: 10px;
+right: 10px;
+width: 15px;
+height: 15px;
+background: #888;
+color:#eee;
+text-align: center;
+line-height: 15px;
+border-radius: 15px;
+cursor: pointer;
+}
+.popup .close-btn:hover{
+background: red;
+}
+.popup .form h2{
+text-align: center;
+color: #f6685e;
+margin: 10px 0px 20px;
+font-size: 22px;
+}
+.popup .form .form-element{
+margin: 10px 0px;
+}
+.popup .form .form-element label{
+font-size: 16px;
+color: #222;
+}
+.popup .form .form-element input[type="text"]{
+margin-top: 5px;
+width: 100%;
+padding: 10px;
+border: 1px solid #ccc;
+outline: none;
+border-radius: 5px;
+}
+select{
+margin-top: 5px;
+width: 100%;
+padding: 10px;
+border: 1px solid #ccc;
+outline: none;
+border-radius: 5px;
+background-color: #FFF;
+}
+.input-box input[type="checkbox"]
+{
+display: flex;
+align-items: flex-start;
+justify-content: flex-start;
+width: 40px;
+height: 40px;
+border-radius: 50%;
+border: none;
+}
+.input-box input[type="checkbox"]:active
+{
+background: #f6685e;
+border: none;
+}
+.chatbotgif img{
+width: 650px;
+height: 650px;
+margin-top: 50px;
+margin-left: 50px;
+}
+.popupcont{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(217, 210, 210, 0.5);
+display: none;
+}
+
+.password-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+.password-toggle {
+  position: absolute;
+  margin-left:  80%;
+  transform: translateY(-50%);
+  /* cursor: pointer; */
+  /* background: #000; */
+  width: 0;
+  height: auto;
+  top: -33px;
+}
+.icon{
+  width: auto;
+}
+.password-toggle i{
+  color: #f6685e;
+  font-weight: 700;
+  font-size: 18px;
+  left: 10px;
+  width: 0;
+  height: auto;
+  /* background: #222; */
+  /* margin-left: 25px; */
+}
+
+.input-box .icon {
+  /* width: 20px; Change this value as needed */
+  height: auto; /* Maintain aspect ratio */
+  
+}
+
+.required {
+      color: red;
+      font-size: 12px;
+      display: none;
+      margin-top:3px;
+      font-weight: 600;
+  }
+.alerts
+{
+color:red;
+
+}
+  
+  </style>
+        <div class="queshead">
+          <h1>Pharmapulse ChatBot</h1>
+          <h3>Ask about your health and receive personalized advice. </h3>
+        </div>
+    
+  <div class="outer" id="outerContainer">
+  <div class="container">
+    <div class="title"> USER REGISTRATION</div>
+    <div class="content">
+      <form action="/otpAuthentication" method="post" class="form">
+        <div class="user-details">
+            <div class="input-box">
+                <span class="details">Full Name</span>
+                <input type="text" id="fullName"/>
+                <p class="required" id="fullNameRequired">* required</p>
+              </div>
+              <div class="input-box">
+                <span class="details">Date of Birth</span>
+                <input type="date" id="dob"/>
+                <p class="required" id="dobRequired">* required</p>
+              </div>
+          
+          <div class="input-box">
+            <span class="details">Phone Number</span>
+            <input type="text" id="phoneNumber"/>
+            <p class="required" id="phoneNumberRequired">* required</p>
+          </div>
+          <div class="input-box">
+            <span class="details">Gender</span>
+            <select>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Transgender</option>
+            </select>
+            <p class="required" id="genderRequired">* required</p>
+          </div>
+          <div class="input-box">
+            <span class="details">E-mail</span>
+            <input type="email" id="email"/>
+            <p class="required" id="emailRequired">* required</p>
+            <p class = "alerts" id = "ads"> {{msg}}</p>
+          </div>
+          <script type = "text/javascript">
+            setTimeout(()=>{
+              const sometext = document.getElementById("ads");
+              sometext.style.display = 'none';
+            },3000);
+          </script>
+          <div class="input-box">
+            <span class="details">Age</span>
+            <input type="text" id="age"/>
+            <p class="required" id="ageRequired">* required</p>
+          </div>
+          <div class="input-box">
+            <span class="details">New Password</span>
+            <input type="password" id="password-input-1"/>
+            <p class="required" id="passwordRequired1">* required</p>
+            <span class="password-toggle" data-target="password-input-1">
+                <i class="icon ion-md-eye eyeShow" ></i>
+                <i class="icon ion-md-eye-off eyeHide" style="display: none;"></i>
+            </span>
+        </div>
+        <div class="input-box">
+            <span class="details">Confirm Password</span>
+            <input type="password" id="password-input-2"/>
+            <p class="required" id="passwordRequired2">* required</p>
+            <span class="password-toggle" data-target="password-input-2">
+                <i class="icon ion-md-eye eyeShow" ></i>
+                <i class="icon ion-md-eye-off eyeHide" style="display: none;"></i>
+            </span>
+        </div>
+        </div>  
+        <div class="button">
+          <input id="OTP" type="submit" name="clicked" value="Register Now">
+        </div>
+
+      </div>
+  </div>
+</form>
+<div class="chatbotgif">
+  <img src="/static/doctor-animate.gif" alt="chatbot">
+</div>
+</div>
+<div class="popupcont">
+<div class="popup">
+  <div class="close-btn">&times;</div>
+  <div class="form">
+    <form action="/otp" method="post">
+      <h2>ONE TIME PASSWORD</h2>
+      <div class="form-element">
+        <input type="text" name="OTP" id="otpInputContainer" placeholder="Enter your OTP" />
+        <div class="form-element">
+          <button type="submit" class="btn" name="clicked" value="Register" id="otpButton">Register</button>
+      </div> 
+    </div>
+  </form>
+</div>
+</div>
+    <script>
+      let otpGeneration;
+      
+      document.querySelector(".popup .close-btn").addEventListener("click", function() {
+          document.querySelector(".popupcont").classList.remove("active");
+          document.querySelector(".popupcont").style.display ="none";
+      });
+      
+
+    // JavaScript to toggle password visibility
+    document.querySelectorAll('.password-toggle').forEach(function(toggle) {
+        toggle.addEventListener('click', function() {
+            var targetId = this.dataset.target;
+            var passwordInput = document.getElementById(targetId);
+            var eyeShow = this.querySelector('.eyeShow');
+            var eyeHide = this.querySelector('.eyeHide');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeShow.style.display = 'none';
+                eyeHide.style.display = 'block';
+            } else {
+                passwordInput.type = 'password';
+                eyeShow.style.display = 'block';
+                eyeHide.style.display = 'none';
+            }
+        });
+    });
+
+    // document.getElementById('fullName').addEventListener("change", function() {
+    function checkInputField(x,y) {
+      if (x === "") {
+        document.getElementById(y).style.display = "block";
+      } else {
+        document.getElementById(y).style.display = "none";
+      }
+    };
+
+    function generateOTP() {
+    // Generate a random number between 100000 and 999999
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      return otp;
+    }
+    
+    // Submit Form Validation
+    document.querySelector("form").addEventListener("submit", function(event) {
+      var password1 = document.getElementById("password-input-1").value;
+      var password2 = document.getElementById("password-input-2").value;
+      console.log(password1, password2);
+                  
+          // Validate each input field
+          const fullName = document.querySelector('input[type="text"]').value.trim();
+          const dob = document.querySelector('input[type="date"]').value.trim();
+          const phoneNumber = document.getElementById('phoneNumber').value.trim();
+          const gender = document.querySelector('select').value;
+          const email = document.getElementById('email').value.trim();
+          const age = document.getElementById('age').value.trim();
+          const newPassword = document.getElementById('password-input-1').value;
+          const confirmPassword = document.getElementById('password-input-2').value;
+
+          checkInputField(fullName,'fullNameRequired');
+          checkInputField(dob,'dobRequired');
+          checkInputField(phoneNumber,'phoneNumberRequired');
+          checkInputField(email,'emailRequired');
+          checkInputField(age,'ageRequired');
+          checkInputField(newPassword,'passwordRequired1');
+          checkInputField(confirmPassword,'passwordRequired2');
+          let emailCheck = 0;
+
+          const doNetworkCall = async () => {
+              try {
+                const response = await fetch('/doesExist', {
+                    method:'POST',
+                    headers: {
+                      'Content-Type':'application/json'
+                    },
+                    body:JSON.stringify({
+                      //otp: otpGeneration,
+                      email: email
+                    })
+                });
+                const jsonData = await response.json();
+                emailCheck = await jsonData[0];
+                console.log(jsonData);
+                return emailCheck;
+              } catch (error) {
+                console.log(error);
+                return null;
+              }
+          };
+
+          const mainFunction = async () => {
+            await doNetworkCall(); // Ensure the async operation completes
+            console.log('Updated emailCheck after doNetworkCall:', emailCheck); // Use the updated value
+
+            // Additional operations depending on the updated value
+            if (emailCheck) {
+                fetch('/renderIndexPage', {
+                method: 'GET',
+                headers: {
+                  'Content-Type':'application/json'
+                }
+              })
+              .then ((response) => window.location.href = "/renderIndexPage")
+              .catch((error) => {
+                console.error('Error:', error);
+              }); 
+            } else {
+              console.log('Email does not exist');
+              if (fullName !== "" && dob !== "" && phoneNumber !== "" && gender !== "" && email !== "" && age !== "" && newPassword !== "" && confirmPassword !== "" && emailCheck===0) {
+          if (password1 !== password2) {
+            alert("Passwords do not match");
+          } else {
+            document.querySelector(".popupcont").classList.add("active");
+            document.querySelector(".popupcont").style.display ="block";
+
+
+            otpGeneration = generateOTP();
+            console.log(otpGeneration);
+            fetch('/otpAuthentication', {
+              method:'POST',
+              headers: {
+                'Content-Type':'application/json'
+              },
+              body:JSON.stringify({
+                otp: otpGeneration,
+                email: email
+              })
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // console.log(data);
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
+
+          }
+        }
+            }
+          };
+
+          // Execute the main function
+          mainFunction();
+
+    
+          console.log(emailCheck);
+          
+
+         
+          event.preventDefault(); 
+    });
+    // console.log(otpGeneration);
+    document.getElementById('otpButton').addEventListener("click", function(event) {
+      event.preventDefault();
+      if (document.getElementById('otpInputContainer').value === "") {
+        alert("Please enter the OTP");
+      } else {
+        if (document.getElementById('otpInputContainer').value == otpGeneration) {
+            const userCredientials = {
+              fullName: document.getElementById('fullName').value,
+              dob: document.getElementById('dob').value,
+              phoneNumber: document.getElementById('phoneNumber').value,
+              gender: document.querySelector('select').value,
+              age: document.getElementById('age').value,
+              emailId: document.getElementById('email').value,
+              password: document.getElementById('password-input-1').value
+            };
+          console.log(userCredientials);
+          fetch('/register', {
+            method: 'POST', // or 'POST' if your route accepts POST requests
+            headers: {
+                'Content-Type': 'application/json', // or any other content type your route expects
+            },
+            // You can include any data you want to send to your Flask route in the body
+            body: JSON.stringify(userCredientials)
+          })
+            .then((response) => response.json())
+            .catch((error) => {
+              console.error('Error:', error);
+            });
+          
+          fetch('/questionsOpen', {
+            method: 'GET', // or 'POST' if your route accepts POST requests
+            headers: {
+                'Content-Type': 'application/json', // or any other content type your route expects
+            },
+            // You can include any data you want to send to your Flask route in the body
+            // body: JSON.stringify({ key: value }),
+        })      
+        .then ((response) => window.location.href = "/questionsOpen")
+        .catch((error) => {
+          console.error('Error:', error);
+        });                      
+        } else {
+          alert('OTP is incorrect');
+        }
+      }
+    });
+
+
+    </script>
+</body>
+</html>
